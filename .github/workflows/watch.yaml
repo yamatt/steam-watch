@@ -3,7 +3,12 @@ name: Steam Watch
 on:
   schedule:
     - cron: "0 9 * * *" # Run daily at 07:00 UTC
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/watch.yaml"
+      - "scrapy_spiders/steam_trains.py"
 
 permissions:
   contents: read
