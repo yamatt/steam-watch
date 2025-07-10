@@ -8,7 +8,7 @@ on:
       - main
     paths:
       - ".github/workflows/watch.yaml"
-      - "scrapy_spiders/steam_trains.py"
+      - "steam_watch/spiders/steam_trains.py"
       - "src/templates/ntfy-message.jinja2.txt"
 
 permissions:
