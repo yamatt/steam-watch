@@ -1,0 +1,43 @@
+name: Steam Watch
+
+on:
+  schedule:
+    - cron: "0 9 * * *" # Run daily at 07:00 UTC
+  workflow_dispatch:
+
+jobs:
+  check-steam-trains:
+    name: Check for Steam Trains
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Set up Python
+        run: uv python install
+      - name: Run Scrapy spider
+        run: |
+          uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json  -t json
+      - name: Check for steam trains
+        id: steamcheck
+        run: |
+          if [ ! -s steam_trains.json ]; then
+            echo "No steam trains found."
+            exit 0
+          fi
+          count=$(jq length steam_trains.json)
+          echo "found_count=$count" >> "$GITHUB_OUTPUT"
+      - name: Upload result
+        id: upload
+        if: steps.steamcheck.outputs.found_count != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: steam-trains
+          path: steam_trains.json
+      - name: Use ntfy if steam trains found
+        uses: niniyas/ntfy-action@master
+        if: steps.steamcheck.outputs.found_count != '0'
+        with:
+          url: "https://ntfy.sh"
+          topic: "steam-watch-${{ secrets.STATION_CODE }}"
+          details: "Steam trains found: ${{ steps.upload.outputs.artifact-url }}"
