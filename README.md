@@ -1,3 +1,25 @@
 # Steam Watch
 
 Notify me when a train goes past my house
+
+This GitHub Workflow runs every morning and scrapes Real Time Trains using Scrapy to return possible services that look like they might be steam trains.
+
+Then it uses Jinja2 to create a nice message and sends that to a ntfy channel for that station that you can subscribe to with your phone using the free and open source [ntfy app](https://ntfy.sh/).
+
+If you want to run this yourself you can clone the repo and you will need to set up your personal station code called `STATION_CODE` in a secret in the cloned repo.
+
+## Running Locally
+
+You can run a lot of this locally yourself. You will need [uv](https://docs.astral.sh/uv/) installed and sync'd.
+
+You can run this to get the output. You can replace KGX with whatever station you're looking at:
+
+```shell
+uv run scrapy crawl steam_trains -a station_code=KGX -o steam_trains.json
+```
+
+And run the following to generate the message:
+
+```shell
+jq '{data: .}' steam_trains.json.json | uv run jinja2 src/templates/ntfy-message.jinja2.txt --format=json
+```
