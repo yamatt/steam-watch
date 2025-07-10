@@ -1,0 +1,4 @@
+{% for service in data -%}
+🚂 {{ service.headcode }} – {{ service.origin }} → {{ service.destination }}
+🕗 {{ service.scheduled_departure }}Z 📍 {{ service.station_code }} platform {{ service.platform }}
+{%- endfor %}

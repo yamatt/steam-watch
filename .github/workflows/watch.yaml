@@ -43,6 +43,11 @@ jobs:
         with:
           name: steam-trains
           path: steam_trains.json
+      - name: Create Ntfy Message
+        id: ntfy_message
+        if: steps.steamcheck.outputs.found_count != '0'
+        run: |
+          echo "message=$(jq '{data: .}' found.json | uv run jinja2 src/templates/ntfy-message.jinja2.txt --format=json)" >> "$GITHUB_OUTPUT"
       - name: Use ntfy if steam trains found
         uses: niniyas/ntfy-action@master
         if: steps.steamcheck.outputs.found_count != '0'
@@ -50,6 +55,6 @@ jobs:
           url: "https://ntfy.sh"
           topic: "steam-watch-${{ secrets.STATION_CODE }}"
           title: "Steam trains found"
-          details: ${{ steps.upload.outputs.artifact-url }}"
+          details: ${{ steps.ntfy_message.outputs.message }}
       - uses: liskin/gh-workflow-keepalive@v1
         if: always()

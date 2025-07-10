@@ -55,6 +55,7 @@ class SteamTrainsSpider(scrapy.Spider):
 
                 yield {
                     "url": response.urljoin(service.attrib["href"]),
+                    "station_code": self.station_code,
                     "headcode": service.css("div.tid::text").get(default="").strip(),
                     "origin": service.css("div.location.o span::text")
                     .get(default="")
