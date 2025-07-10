@@ -49,6 +49,7 @@ jobs:
         with:
           url: "https://ntfy.sh"
           topic: "steam-watch-${{ secrets.STATION_CODE }}"
-          details: "Steam trains found: ${{ steps.upload.outputs.artifact-url }}"
+          title: "Steam trains found"
+          details: ${{ steps.upload.outputs.artifact-url }}"
       - uses: liskin/gh-workflow-keepalive@v1
         if: always()
