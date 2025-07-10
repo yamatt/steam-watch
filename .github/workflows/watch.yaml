@@ -12,7 +12,6 @@ on:
 
 permissions:
   contents: read
-  actions: write
 
 jobs:
   check-steam-trains:
@@ -56,5 +55,10 @@ jobs:
           topic: "steam-watch-${{ secrets.STATION_CODE }}"
           title: "Steam trains found"
           details: ${{ steps.ntfy_message.outputs.message }}
+  workflow-keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
       - uses: liskin/gh-workflow-keepalive@v1
-        if: always()
