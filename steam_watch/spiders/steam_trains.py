@@ -2,7 +2,7 @@ import scrapy
 from datetime import datetime, timedelta, timezone
 import re
 
-HEADCODE_PATTERN = re.compile(r"1Z\d{2}")
+HEADCODE_PATTERN = re.compile(r"[15]Z\d{2}")
 KNOWN_TOCS = {"WR", "SLC", "SRHC", "RTC", "UKRT"}
 
 
@@ -10,19 +10,7 @@ class SteamTrainsSpider(scrapy.Spider):
     name = "steam_trains"
     allowed_domains = ["realtimetrains.co.uk"]
 
-    station_code = "GDH"
     days_ahead = 7
-
-    # Heuristics
-    keywords = [
-        "steam",
-        "charter",
-        "railtour",
-        "tornado",
-        "black five",
-        "flying scotsman",
-    ]
-    headcode_prefixes = ["1Z", "5Z"]
 
     def __init__(self, station_code, **kwargs):
         super().__init__(**kwargs)
