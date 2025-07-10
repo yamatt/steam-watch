@@ -5,6 +5,10 @@ on:
     - cron: "0 9 * * *" # Run daily at 07:00 UTC
   workflow_dispatch:
 
+permissions:
+  contents: read
+  actions: write
+
 jobs:
   check-steam-trains:
     name: Check for Steam Trains
@@ -41,3 +45,5 @@ jobs:
           url: "https://ntfy.sh"
           topic: "steam-watch-${{ secrets.STATION_CODE }}"
           details: "Steam trains found: ${{ steps.upload.outputs.artifact-url }}"
+      - uses: liskin/gh-workflow-keepalive@v1
+        if: always()
