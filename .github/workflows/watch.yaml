@@ -21,7 +21,7 @@ jobs:
         run: uv python install
       - name: Run Scrapy spider
         run: |
-          uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json  -t json
+          uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json
       - name: Check for steam trains
         id: steamcheck
         run: |
