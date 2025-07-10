@@ -5,6 +5,7 @@ import re
 HEADCODE_PATTERN = re.compile(r"1Z\d{2}")
 KNOWN_TOCS = {"WR", "SLC", "SRHC", "RTC", "UKRT"}
 
+
 class SteamTrainsSpider(scrapy.Spider):
     name = "steam_trains"
     allowed_domains = ["realtimetrains.co.uk"]
@@ -13,7 +14,14 @@ class SteamTrainsSpider(scrapy.Spider):
     days_ahead = 7
 
     # Heuristics
-    keywords = ["steam", "charter", "railtour", "tornado", "black five", "flying scotsman"]
+    keywords = [
+        "steam",
+        "charter",
+        "railtour",
+        "tornado",
+        "black five",
+        "flying scotsman",
+    ]
     headcode_prefixes = ["1Z", "5Z"]
 
     def __init__(self, station_code, **kwargs):
@@ -26,7 +34,9 @@ class SteamTrainsSpider(scrapy.Spider):
             check_date = today + timedelta(days=i)
             date_str = check_date.strftime("%Y-%m-%d")
             url = f"https://www.realtimetrains.co.uk/search/detailed/gb-nr:{self.station_code}/{check_date.strftime('%Y-%m-%d')}/0000-2359?stp=S&show=all"
-            yield scrapy.Request(url=url, callback=self.parse, meta={'date': check_date})
+            yield scrapy.Request(
+                url=url, callback=self.parse, meta={"date": check_date}
+            )
 
     def parse(self, response):
         services = response.css("a.service")
@@ -46,20 +56,24 @@ class SteamTrainsSpider(scrapy.Spider):
                 yield {
                     "url": response.urljoin(service.attrib["href"]),
                     "headcode": service.css("div.tid::text").get(default="").strip(),
-                    "origin": service.css("div.location.o span::text").get(default="").strip(),
-                    "destination": service.css("div.location.d span::text").get(default="").strip(),
+                    "origin": service.css("div.location.o span::text")
+                    .get(default="")
+                    .strip(),
+                    "destination": service.css("div.location.d span::text")
+                    .get(default="")
+                    .strip(),
                     "scheduled_departure": dt_utc,
-                    "platform": service.css("div.platform::text").get(default="").strip(),
+                    "platform": service.css("div.platform::text")
+                    .get(default="")
+                    .strip(),
                     "toc": service.css("div.toc::text").get(default="").strip(),
                 }
-    
+
     def is_potential_steam_train(self, train_data):
         stp_type = train_data.css("div.stp::text").get(default="").strip().upper()
         headcode = train_data.css("div.tid::text").get(default="").strip().upper()
         toc = train_data.css("div.toc::text").get(default="").strip().upper()
 
         return (
-            stp_type == "STP" and
-            HEADCODE_PATTERN.match(headcode) and
-            toc in KNOWN_TOCS
+            stp_type == "STP" and HEADCODE_PATTERN.match(headcode) and toc in KNOWN_TOCS
         )
