@@ -3,13 +3,6 @@ name: Steam Watch
 on:
   schedule:
     - cron: "0 9 * * *" # Run daily at 07:00 UTC
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/watch.yaml"
-      - "steam_watch/spiders/steam_trains.py"
-      - "src/templates/ntfy-message.jinja2.txt"
 
 permissions:
   contents: read
