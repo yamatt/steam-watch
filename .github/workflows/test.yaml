@@ -1,0 +1,69 @@
+name: Steam Watch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/watch.yaml"
+      - "steam_watch/spiders/steam_trains.py"
+      - "src/templates/ntfy-message.jinja2.txt"
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Set up Python
+        run: uv python install
+      - name: Run linters
+        run: |
+          uv run black --check --diff steam_watch
+          uv run isort --check-only steam_watch
+  functional-test:
+    name: Functional Test for Steam Trains
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Set up Python
+        run: uv python install
+      - name: Run Scrapy spider
+        run: |
+          uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json
+      - name: Check for steam trains
+        id: steamcheck
+        run: |
+          if [ ! -s steam_trains.json ]; then
+            echo "No steam trains found."
+            exit 0
+          fi
+          count=$(jq length steam_trains.json)
+          echo "found_count=$count" >> "$GITHUB_OUTPUT"
+      - name: Upload result
+        id: upload
+        if: steps.steamcheck.outputs.found_count != '0'
+        uses: actions/upload-artifact@v4
+        with:
+          name: steam-trains
+          path: steam_trains.json
+      - name: Create Ntfy Message
+        id: ntfy_message
+        if: steps.steamcheck.outputs.found_count != '0'
+        run: |
+          echo "message=$(jq '{data: .}' steam_trains.json | uv run jinja2 src/templates/ntfy-message.jinja2.txt --format=json)" >> "$GITHUB_OUTPUT"
+      - name: Use ntfy if steam trains found
+        uses: niniyas/ntfy-action@master
+        if: steps.steamcheck.outputs.found_count != '0'
+        with:
+          url: "https://ntfy.sh"
+          topic: "steam-watch-${{ secrets.STATION_CODE }}-test"
+          title: "Possible steam trains found"
+          details: ${{ steps.ntfy_message.outputs.message }}
