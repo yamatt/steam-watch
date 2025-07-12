@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/watch.yaml"
+      - ".github/workflows/test.yaml"
       - "steam_watch/spiders/steam_trains.py"
       - "src/templates/ntfy-message.jinja2.txt"
 
