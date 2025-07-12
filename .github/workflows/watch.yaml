@@ -1,4 +1,4 @@
-name: Steam Watch
+name: Run Steam Watch
 
 on:
   schedule:
