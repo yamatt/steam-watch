@@ -36,19 +36,22 @@ jobs:
         with:
           name: steam-trains
           path: steam_trains.json
-      - name: Create Ntfy Message
-        id: ntfy_message
+      - name: Create Message
+        id: message
         if: steps.steamcheck.outputs.found_count != '0'
         run: |
           echo "message=$(jq '{data: .}' steam_trains.json | uv run jinja2 src/templates/ntfy-message.jinja2.txt --format=json)" >> "$GITHUB_OUTPUT"
-      - name: Use ntfy if steam trains found
-        uses: niniyas/ntfy-action@master
+      - name: Send e-mail
         if: steps.steamcheck.outputs.found_count != '0'
-        with:
-          url: "https://ntfy.sh"
-          topic: "steam-watch-${{ secrets.STATION_CODE }}"
-          title: "Possible steam trains found"
-          details: ${{ steps.ntfy_message.outputs.message }}
+        run: |
+          curl -X POST \
+            https://api.buttondown.com/v1/emails \
+            -H "Authorization: Token ${{ secrets.BUTTONDOWN_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+                  "subject": "Possible steam trains found",
+                  "body": "${{ steps.message.outputs.message }}"
+                }'
   workflow-keepalive:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
