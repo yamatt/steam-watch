@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 import scrapy
 
 HEADCODE_PATTERN = re.compile(r"[15]Z\d{2}")
-KNOWN_TOCS = {"WR", "SLC", "SRHC", "RTC", "UKRT"}
+KNOWN_TOCS = {"WR", "LS", "TY"}
 
 
 class SteamTrainsSpider(scrapy.Spider):
