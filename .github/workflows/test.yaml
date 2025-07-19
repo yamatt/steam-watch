@@ -7,7 +7,8 @@ on:
     paths:
       - ".github/workflows/test.yaml"
       - "steam_watch/spiders/steam_trains.py"
-      - "src/templates/ntfy-message.jinja2.txt"
+      - "src/"
+      - "tests/"
 
 permissions:
   contents: read
@@ -24,8 +25,22 @@ jobs:
         run: uv python install
       - name: Run linters
         run: |
-          uv run black --check --diff steam_watch
-          uv run isort --check-only steam_watch
+          uv run black --check --diff steam_watch tests
+          uv run isort --check-only steam_watch tests
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Set up Python
+        run: uv python install
+      - name: Run unit tests
+        run: |
+          uv run pytest tests/unit
+          uv run pytest --cov=steam_watch tests/unit | tee coverage.log
+          cat coverage.log >> $GITHUB_STEP_SUMMARY
   functional-test:
     name: Functional Test for Steam Trains
     runs-on: ubuntu-latest
@@ -38,33 +53,3 @@ jobs:
       - name: Run Scrapy spider
         run: |
           uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json
-      - name: Check for steam trains
-        id: steamcheck
-        run: |
-          if [ ! -s steam_trains.json ]; then
-            echo "No steam trains found."
-            exit 0
-          fi
-          count=$(jq length steam_trains.json)
-          echo "found_count=$count" >> "$GITHUB_OUTPUT"
-      - name: Upload result
-        id: upload
-        if: steps.steamcheck.outputs.found_count != '0'
-        uses: actions/upload-artifact@v4
-        with:
-          name: steam-trains
-          path: steam_trains.json
-      - name: Send e-mail
-        id: message
-        if: steps.steamcheck.outputs.found_count != '0'
-        run: |
-          jq '{data: .}' steam_trains.json | uv run jinja2 src/templates/ntfy-message.jinja2.txt --format=json > message.txt
-          curl -X POST \
-            https://api.buttondown.com/v1/emails \
-            -H "Authorization: Token ${{ secrets.BUTTONDOWN_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-                  "subject": "Possible steam trains found",
-                  "body": "$(awk '{printf "%s\\n", $0}' message.txt)",
-                  "tags": ["test"],
-                }'
