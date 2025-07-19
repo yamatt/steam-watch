@@ -42,7 +42,7 @@ jobs:
           uv run pytest --cov=steam_watch tests | tee coverage.log
           cat coverage.log >> $GITHUB_STEP_SUMMARY
   functional-test:
-    name: Functional Test for Steam Trains
+    name: Functional Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
