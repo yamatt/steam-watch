@@ -700,6 +700,7 @@ name = "steam-watch"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "click" },
     { name = "jinja2-cli" },
     { name = "scrapy" },
 ]
@@ -714,6 +715,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "click", specifier = ">=8.2.1" },
     { name = "jinja2-cli", specifier = ">=0.8.2" },
     { name = "scrapy", specifier = ">=2.13.3" },
 ]
