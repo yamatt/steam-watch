@@ -54,7 +54,7 @@ jobs:
         run: |
           uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json
   zizmor:
-    name: Run zizmor 🌈
+    name: Run Static Analysis
     runs-on: ubuntu-latest
     permissions:
       security-events: write
@@ -64,5 +64,5 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - name: Run zizmor 🌈
+      - name: Run zizmor
         uses: zizmorcore/zizmor-action@f52a838cfabf134edcbaa7c8b3677dde20045018 # v0.1.1
