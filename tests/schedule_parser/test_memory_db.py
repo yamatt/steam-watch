@@ -2,8 +2,8 @@ from unittest.mock import Mock, mock_open, patch
 
 import pytest
 
-from schedule_parser.parser import ScheduleParser
 from schedule_parser.memory_db import ScheduleMemoryDB
+from schedule_parser.parser import ScheduleParser
 
 
 class TestScheduleMemoryDB:
