@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - ".github/workflows/test.yaml"
-      - "steam_watch/spiders/steam_trains.py"
+      - "steam_watch/**"
       - "src/**"
       - "tests/**"
+      - "pyproject.toml"
+      - "uv.lock"
 
 permissions:
   contents: read
