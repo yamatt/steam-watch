@@ -7,8 +7,8 @@ on:
     paths:
       - ".github/workflows/test.yaml"
       - "steam_watch/spiders/steam_trains.py"
-      - "src/"
-      - "tests/"
+      - "src/**"
+      - "tests/**"
 
 permissions:
   contents: read
