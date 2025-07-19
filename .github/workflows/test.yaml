@@ -41,6 +41,18 @@ jobs:
           uv run pytest tests
           uv run pytest --cov=steam_watch tests | tee coverage.log
           cat coverage.log >> $GITHUB_STEP_SUMMARY
+  security-scanner:
+    name: Security Scanner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+      - name: Set up Python
+        run: uv python install
+      - name: Run Bandit
+        run: |
+          uv run bandit -r src/schedule_parser/ steam_watch/
   functional-test:
     name: Functional Tests
     runs-on: ubuntu-latest
@@ -54,7 +66,7 @@ jobs:
         run: |
           uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json
   zizmor:
-    name: Run Static Analysis
+    name: GitHub Actions Static Analysis
     runs-on: ubuntu-latest
     permissions:
       security-events: write
