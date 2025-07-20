@@ -5,6 +5,7 @@ import pytest
 from schedule_parser.collection import ScheduleCollection
 from schedule_parser.memory_db import ScheduleMemoryDB
 
+
 @pytest.fixture
 def mock_schedule_collection():
     mock_schedule_parser = Mock(spec=ScheduleCollection)
@@ -15,9 +16,7 @@ def mock_schedule_collection():
                 "CIF_train_uid": "example-1",
                 "schedule_start_date": "2025-07-14",
                 "transaction_type": "Create",
-                "schedule_segment": {
-                    "signalling_id": "1Z40"
-                }
+                "schedule_segment": {"signalling_id": "1Z40"},
             }
         },
         {
@@ -26,17 +25,16 @@ def mock_schedule_collection():
                 "CIF_train_uid": "example-2",
                 "schedule_start_date": "2025-07-14",
                 "transaction_type": "Delete",
-                "schedule_segment": {
-                    "signalling_id": "1Z40"
-                }
+                "schedule_segment": {"signalling_id": "1Z40"},
             }
         },
     ]
     return mock_schedule_parser
 
+
 class TestScheduleMemoryDB:
     def test_services(self, mock_schedule_collection):
-        
+
         schedule_memory_db = ScheduleMemoryDB(mock_schedule_collection)
 
         services = schedule_memory_db.services
@@ -61,4 +59,3 @@ class TestScheduleMemoryDB:
 
         assert len(services) == 1
         assert "1Z40" in services
-
