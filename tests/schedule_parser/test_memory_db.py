@@ -44,20 +44,20 @@ class TestScheduleMemoryDB:
         assert len(services) == 1
         assert ("2025-07-14", "example-1", "N") in services
 
-    def test_services_by_date(self, mock_schedule_collection):
+    def test_by_date(self, mock_schedule_collection):
 
         schedule_memory_db = ScheduleMemoryDB(mock_schedule_collection)
 
-        services = schedule_memory_db.services_by_date
+        services = schedule_memory_db.by_date
 
         assert len(services) == 1
         assert "2025-07-14" in services
 
-    def test_services_by_date(self, mock_schedule_collection):
+    def test_by_signal_id(self, mock_schedule_collection):
 
         schedule_memory_db = ScheduleMemoryDB(mock_schedule_collection)
 
-        services = schedule_memory_db.services_by_signal_id
+        services = schedule_memory_db.by_signal_id
 
         assert len(services) == 1
         assert "1Z40" in services

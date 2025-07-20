@@ -25,7 +25,7 @@ class ScheduleMemoryDB:
         return db
 
     @cached_property
-    def services_by_date(self) -> OrderedDict:
+    def by_date(self) -> OrderedDict:
         services = OrderedDict()
         for key, service in self.services.items():
             new_service = services.get(key[0], [])
@@ -34,7 +34,7 @@ class ScheduleMemoryDB:
         return services
 
     @cached_property
-    def services_by_signal_id(self) -> OrderedDict:
+    def by_signal_id(self) -> OrderedDict:
         services = OrderedDict()
         for _, service in self.services.items():
             new_service = services.get(service["schedule_segment"]["signalling_id"], [])
