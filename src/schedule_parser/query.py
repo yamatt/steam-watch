@@ -18,8 +18,8 @@ class SteamWatchQuery:
         for date_s, services in self.db.by_date.items():
             date = datetime.strptime(date_s, "%Y-%m-%d")
 
-            if date < self.now: # before now. I.e.: old services
-                continue # next one
+            if date < self.now: # skip if it's in the past
+                continue
             
             for service in services:
                 if service["CIF_stp_indicator"] != "N":
@@ -32,7 +32,6 @@ class SteamWatchQuery:
                 stops = service["schedule_segment"]["schedule_location"]
 
                 for stop in stops:
-                    print(stop)
                     pass_time = stop.get("pass")
                     if not pass_time:
                         pass_time = stop.get("arrival")

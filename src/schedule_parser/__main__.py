@@ -11,7 +11,8 @@ def schedule(file_paths):
     services = ScheduleMemoryDB(schedule)
     query = SteamWatchQuery(services)
 
-    print(list(query.get_stations()))
+    for station in query.get_stations():
+        print(station)
 
 if __name__ == '__main__':
     schedule()
