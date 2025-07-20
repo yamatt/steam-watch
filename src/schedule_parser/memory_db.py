@@ -13,7 +13,7 @@ class ScheduleMemoryDB:
         self.coll = coll
     
     @cached_property
-    def schedule(self) -> list[dict]:
+    def services(self) -> list[dict]:
         db = OrderedDict()
         for item in self.coll.items:
             if "JsonScheduleV1" in item:
