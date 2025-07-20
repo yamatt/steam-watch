@@ -15,7 +15,7 @@ def mock_schedule_collection():
 
 
 class TestParser:
-    def test_iter(self, mock_schedule_collection):
+    def test_items(self, mock_schedule_collection):
         items = list(mock_schedule_collection.items)
         assert len(items) == 1
         assert items == [{"TiplocV1": {"code": "ABC", "name": "Station ABC"}}]
