@@ -2,7 +2,7 @@ name: Run Steam Watch
 
 on:
   schedule:
-    - cron: "0 9 * * *" # Run daily at 07:00 UTC
+    - cron: "0 9 * * 1" # Run daily at 09:00 UTC on Monday
 
 permissions:
   contents: read
@@ -11,15 +11,23 @@ jobs:
   check-steam-trains:
     name: Check for Steam Trains
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        toc:
+          - "pa"
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
         uses: astral-sh/setup-uv@v6
       - name: Set up Python
         run: uv python install
-      - name: Run Scrapy spider
+      - name: Download data
         run: |
-          uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json
+          curl -L -u '${{ secrets.OPEN_RAIL_DATA_USER_PASS }}' 'https://publicdatafeeds.networkrail.co.uk/ntrod/CifFileAuthenticate?type=CIF_${{ matrix.toc }}_TOC_FULL_DAILY&day=toc-full' -o full.jsonl.gz
+          gunzip full.jsonl.gz
+      - name: Find trains for station
+        run: |
+          uv run python3 -m src.schedule_parser full.jsonl | jq '[.[] | select(.tiploc == "${{ secrets.STATION_TIPLOC }}")]' > steam_trains.json
       - name: Check for steam trains
         id: steamcheck
         run: |
