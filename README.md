@@ -31,5 +31,5 @@ jq '{data: .}' steam_trains.json.json | uv run jinja2 src/templates/ntfy-message
 ### Running Locally
 
 ```shell
-uv run python3 -m src.schedule_parser data/pa-full.jsonl
+uv run python3 -m src.schedule_parser data/pa-full.jsonl | jq '[.[] | select(.tiploc == "CHST")]'
 ```

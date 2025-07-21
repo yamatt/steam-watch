@@ -14,7 +14,10 @@ class SteamWatchQuery:
     def now(self):
         return datetime.now()
 
-    def get_stations(self):
+    def all_stops(self):
+        """
+        The train doesn't stop at these stops, mostly. It just passes them.
+        """
         for date_s, services in self.db.by_date.items():
             date = datetime.strptime(date_s, "%Y-%m-%d")
 
@@ -31,19 +34,25 @@ class SteamWatchQuery:
 
                 stops = service["schedule_segment"]["schedule_location"]
 
+                first_stop = stops[0]
+                end_stop = stops[-1]
+
                 for stop in stops:
-                    pass_time = stop.get("pass")
-                    if not pass_time:
-                        pass_time = stop.get("arrival")
-                    if not pass_time:
-                        pass_time = stop.get("departure")
+                    pass_time = stop.get("pass") or stop.get("arrival") or stop.get("departure")
 
                     # create new datetime object based on known date and pass/arrival time
                     # this does not account for trains running past midnight
                     dt = datetime(date.year, date.month, date.day, int(pass_time[:2]), int(pass_time[2:4]))
                     
                     yield {
+                        "atoc": service["atoc_code"],
+                        "first_stop": {
+                            "atoc": first_stop["tiploc_code"],
+                        },
+                        "end_stop": {
+                            "atoc": end_stop["tiploc_code"],
+                        },
                         "tiploc": stop["tiploc_code"],
-                        "dt": dt,
+                        "pass": dt,
                         "platform": stop["platform"]
                     }
