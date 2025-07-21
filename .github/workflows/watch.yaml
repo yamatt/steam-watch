@@ -56,7 +56,7 @@ jobs:
             -d '{
                   "subject": "Possible steam trains found",
                   "body": "$(awk '{printf "%s\\n", $0}' message.txt)",
-                  "tags": ["GDH"],
+                  "tags": ["${{ secrets.STATION_TIPLOC }}"],
                 }'
   workflow-keepalive:
     if: github.event_name == 'schedule'
