@@ -54,5 +54,8 @@ class SteamWatchQuery:
                         },
                         "tiploc": stop["tiploc_code"],
                         "pass": dt,
-                        "platform": stop["platform"]
+                        "platform": stop["platform"],
+                        "train_uid": service["CIF_train_uid"],
+                        "signalling_id": service["schedule_segment"]["signalling_id"],
+                        "stp": service["CIF_stp_indicator"]
                     }
