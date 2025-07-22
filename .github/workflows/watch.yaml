@@ -2,7 +2,7 @@ name: Run Steam Watch
 
 on:
   schedule:
-    - cron: "0 9 * * 1" # Run daily at 09:00 UTC on Monday
+    - cron: "0 9 * * *" # Run daily at 09am UTC
 
 permissions:
   contents: read
@@ -14,7 +14,9 @@ jobs:
     strategy:
       matrix:
         toc:
-          - "pa"
+          - "PA"
+          - "TY"
+          - "LS"
     steps:
       - uses: actions/checkout@v4
       - name: Install uv
@@ -22,15 +24,14 @@ jobs:
       - name: Set up Python
         run: uv python install
       - name: Download data
+        id: download
         run: |
-          curl -L -u '${{ secrets.OPEN_RAIL_DATA_USER_PASS }}' 'https://publicdatafeeds.networkrail.co.uk/ntrod/CifFileAuthenticate?type=CIF_${{ matrix.toc }}_TOC_FULL_DAILY&day=toc-full' -o full.jsonl.gz
-          gunzip full.jsonl.gz
+          curl -L --fail -u '${{ secrets.OPEN_RAIL_DATA_USER_PASS }}' 'https://publicdatafeeds.networkrail.co.uk/ntrod/CifFileAuthenticate?type=CIF_${{ matrix.toc }}_TOC_FULL_DAILY&day=toc-full' -o full.jsonl.gz
       - name: Find trains for station
-        run: |
-          uv run python3 -m src.schedule_parser full.jsonl | jq '[.[] | select(.tiploc == "${{ secrets.STATION_TIPLOC }}")]' > steam_trains.json
-      - name: Check for steam trains
+        if: steps.download.conclusion == 'success'
         id: steamcheck
         run: |
+          uv run python3 -m src.schedule_parser full.jsonl | jq '[.[] | select(.tiploc == "${{ secrets.STATION_TIPLOC }}")]' > steam_trains.json
           if [ ! -s steam_trains.json ]; then
             echo "No steam trains found."
             exit 0
