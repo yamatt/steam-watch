@@ -356,18 +356,6 @@ wheels = [
 ]
 
 [[package]]
-name = "jinja2-cli"
-version = "0.8.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "jinja2" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a4/22/c922839761b311b72ccc95c2ca2239311a3e80916458878962626f96922a/jinja2-cli-0.8.2.tar.gz", hash = "sha256:a16bb1454111128e206f568c95938cdef5b5a139929378f72bb8cf6179e18e50", size = 6726 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/57/4a/032f945db179b83dc6375dcd3f6aa61a0107bfa210458f6fbd68e5556c6f/jinja2_cli-0.8.2-py2.py3-none-any.whl", hash = "sha256:b91715c79496beaddad790171e7258a87db21c1a0b6d2b15bca3ba44b74aac5d", size = 6528 },
-]
-
-[[package]]
 name = "jmespath"
 version = "1.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -788,7 +776,7 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "click" },
-    { name = "jinja2-cli" },
+    { name = "jinja2" },
     { name = "scrapy" },
 ]
 
@@ -804,7 +792,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "click", specifier = ">=8.2.1" },
-    { name = "jinja2-cli", specifier = ">=0.8.2" },
+    { name = "jinja2", specifier = ">=3.1.6" },
     { name = "scrapy", specifier = ">=2.13.3" },
 ]
 

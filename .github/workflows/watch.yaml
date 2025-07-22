@@ -49,14 +49,17 @@ jobs:
         id: message
         if: steps.steamcheck.outputs.found_count != '0'
         run: |
-          jq '{data: .}' steam_trains.json | uv run jinja2 src/templates/ntfy-message.jinja2.txt --format=json > message.txt
+          curl -L --fail -u '${{ secrets.OPEN_RAIL_DATA_USER_PASS }}' 'https://publicdatafeeds.networkrail.co.uk/ntrod/SupportingFileAuthenticate?type=CORPUS' -o CORPUSExtract.json.gz
+          gunzip CORPUSExtract.json.gz
+          uv run python3 -m src.corpus_convert CORPUSExtract.json > tiploc.json
+          uv run python3 -m src.message_render message.jinja2.md steam_trains.json tiploc.json > message.md
           curl -X POST \
             https://api.buttondown.com/v1/emails \
             -H "Authorization: Token ${{ secrets.BUTTONDOWN_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{
                   "subject": "Possible steam trains found",
-                  "body": "$(awk '{printf "%s\\n", $0}' message.txt)",
+                  "body": "$(awk '{printf "%s\\n", $0}' message.md)",
                   "tags": ["${{ secrets.STATION_TIPLOC }}"],
                 }'
   workflow-keepalive:

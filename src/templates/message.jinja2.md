@@ -1,3 +1,3 @@
-{% for service in data %}
-🚂 {{ service.train_uid }} – {{ service.first_stop.atoc }} → {{ service.end_stop.atoc }} 📍 {{ service.tiploc }} platform {{ service.platform }} 🕗 {{ service.pass }} [Add to Google Calendar](https://calendar.google.com/calendar/u/0/r/eventedit?text=Steam+Train+at+{{ service.tiploc }}&dates={{ service.pass }}/{{ service.pass }}&details={{ service.train_uid }}+–+{{ service.first_stop.atoc }}+→+{{ service.end_stop.atoc }}&location={{ service.tiploc }}+platform+{{ service.platform }})
+{% for service in data -%}
+🚂 {{ service.train_uid }} – {{ tiploc[service.first_stop.atoc] }} → {{ tiploc[service.end_stop.atoc] }} 📍 {{ tiploc[service.tiploc] }} platform {{ service.platform }} 🕗 {{ service.pass }} [Add to Google Calendar](https://calendar.google.com/calendar/u/0/r/eventedit?text=Steam+train+at+{{ tiploc[service.tiploc] | urlquote }}&dates={{ service.pass | dt }}/{{ service.pass | dt }}&details={{ service.train_uid }}+–+{{ tiploc[service.first_stop.atoc] | urlquote }}+→+{{ tiploc[service.end_stop.atoc] | urlquote }}&location={{ tiploc[service.tiploc] | urlquote }}+platform+{{ service.platform }})
 {% endfor -%}
