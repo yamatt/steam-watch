@@ -26,6 +26,7 @@ jobs:
         run: uv python install
       - name: Download data
         id: download
+        continue-on-error: true
         run: |
           curl -L --fail -u '${{ secrets.OPEN_RAIL_DATA_USER_PASS }}' 'https://publicdatafeeds.networkrail.co.uk/ntrod/CifFileAuthenticate?type=CIF_${{ matrix.toc }}_TOC_FULL_DAILY&day=toc-full' -o full.jsonl.gz
       - name: Find trains for station
