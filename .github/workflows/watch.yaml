@@ -31,9 +31,12 @@ jobs:
           curl -L --fail -u '${{ secrets.OPEN_RAIL_DATA_USER_PASS }}' 'https://publicdatafeeds.networkrail.co.uk/ntrod/CifFileAuthenticate?type=CIF_${{ matrix.toc }}_TOC_FULL_DAILY&day=toc-full' -o full.jsonl.gz
       - name: Find trains for station
         if: steps.download.conclusion == 'success'
+        run: |
+          gunzip full.jsonl
+          uv run python3 -m src.schedule_parser full.jsonl | jq '[.[] | select(.tiploc == "${{ secrets.STATION_TIPLOC }}")]' > steam_trains.json
+      - name: Check for steam trains
         id: steamcheck
         run: |
-          uv run python3 -m src.schedule_parser full.jsonl | jq '[.[] | select(.tiploc == "${{ secrets.STATION_TIPLOC }}")]' > steam_trains.json
           if [ ! -s steam_trains.json ]; then
             echo "No steam trains found."
             exit 0
