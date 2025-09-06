@@ -42,3 +42,8 @@ uv run pytest tests
 uv run python3 -m src.schedule_parser data/pa-full.jsonl | jq '[.[] | select(.tiploc == "CHST")]'
 ```
 
+## Message Renderer
+
+```shell
+uv run python3 -m src.message_render message.jinja2.md data/trains.json data/tiploc.json
+```
