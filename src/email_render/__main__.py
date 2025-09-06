@@ -6,8 +6,8 @@ import click
 @click.argument("tiploc", required=True)
 @click.argument("message_file_path", required=True)
 def argument_handler(tiploc, message_file_path):
-    return render(tiploc, message_file_path)
+    output = render(tiploc, message_file_path)
+    print(output)
 
 if __name__ == "__main__":
-    email_json = argument_handler()
-    print(email_json)
+    argument_handler()
