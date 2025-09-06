@@ -26,6 +26,12 @@ And run the following to generate the message:
 jq '{data: .}' steam_trains.json.json | uv run jinja2 src/templates/ntfy-message.jinja2.txt --format=json
 ```
 
+## Running Tests
+
+```shell
+uv run pytest tests
+```
+
 ## Open Rail Data
 
 ### Running Locally
@@ -33,3 +39,4 @@ jq '{data: .}' steam_trains.json.json | uv run jinja2 src/templates/ntfy-message
 ```shell
 uv run python3 -m src.schedule_parser data/pa-full.jsonl | jq '[.[] | select(.tiploc == "CHST")]'
 ```
+

@@ -50,23 +50,38 @@ jobs:
         with:
           name: steam-trains
           path: steam_trains.json
-      - name: Send e-mail
-        id: message
+      - name: Get Corpus
+        id: corpus
         if: steps.steamcheck.outputs.found_count != '0'
         run: |
           curl -L --fail -u '${{ secrets.OPEN_RAIL_DATA_USER_PASS }}' 'https://publicdatafeeds.networkrail.co.uk/ntrod/SupportingFileAuthenticate?type=CORPUS' -o CORPUSExtract.json.gz
           gunzip CORPUSExtract.json.gz
+      - name: Render Message
+        if: ${{ steps.corpus.conclusion == 'success' }}
+        run: |
           uv run python3 -m src.corpus_convert CORPUSExtract.json > tiploc.json
           uv run python3 -m src.message_render message.jinja2.md steam_trains.json tiploc.json > message.md
+          echo "message=$(cat message.md)" >> "$GITHUB_OUTPUT"
+      - name: Render Email
+        if: ${{ steps.corpus.conclusion == 'success' }}
+        run: |
+          uv run python3 -m src.email_render message.md > email.json
+      - name: Store message
+        if: ${{ steps.corpus.conclusion == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: steam-train-email
+          path: |
+            message.md
+            email.json
+      - name: Send Email
+        if: ${{ steps.corpus.conclusion == 'success' }}
+        run: |
           curl -X POST \
             https://api.buttondown.com/v1/emails \
             -H "Authorization: Token ${{ secrets.BUTTONDOWN_API_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{
-                  "subject": "Possible steam trains found",
-                  "body": "$(awk '{printf "%s\\n", $0}' message.md)",
-                  "tags": ["${{ secrets.STATION_TIPLOC }}"],
-                }'
+            --data @email.json
   workflow-keepalive:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest
