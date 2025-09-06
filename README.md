@@ -10,6 +10,8 @@ If you want to run this yourself you can clone the repo and you will need to set
 
 ## Real Time Trains Scraper
 
+**No longer supported**
+
 You can run a lot of this locally yourself. You will need [uv](https://docs.astral.sh/uv/) installed and sync'd.
 
 ### Running Locally
