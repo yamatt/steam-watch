@@ -46,7 +46,7 @@ jobs:
       - name: Upload result
         id: upload
         if: steps.steamcheck.outputs.found_count != '0'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: steam-trains
           path: steam_trains.json
@@ -68,7 +68,7 @@ jobs:
           uv run python3 -m src.email_render message.md > email.json
       - name: Store message
         if: ${{ steps.corpus.conclusion == 'success' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: steam-train-email
           path: |
