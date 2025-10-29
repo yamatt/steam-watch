@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
       - name: Set up Python
         run: uv python install
       - name: Run linters
@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
       - name: Set up Python
         run: uv python install
       - name: Run unit tests
@@ -49,7 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
       - name: Set up Python
         run: uv python install
       - name: Run Bandit
@@ -61,7 +61,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Install uv
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
       - name: Set up Python
         run: uv python install
       - name: Run Scrapy spider
