@@ -7,6 +7,8 @@ https://calendar.google.com/calendar/u/0/r/eventedit?text=Steam+train+at+{{ tipl
 {%- endmacro -%}
 
 {%- for service in services -%}
-🚂 {{ service.train_uid }} – {{ tiploc[service.first_stop.atoc] | capitalise }} → {{ tiploc[service.end_stop.atoc] | capitalise }} 📍 {{ tiploc[service.tiploc] | capitalise }} platform {{ service.platform }} 🕗 {{ service.pass | friendly_dt }} [👀 Real Time Trains]({{ real_time_trains_url(service) }}) [🗓️ Add to Google Calendar]({{ add_to_google_calendar_url(tiploc, service) }})
+🚂 {{ service.train_uid }} – {{ tiploc[service.first_stop.atoc] | capitalise }} → {{ tiploc[service.end_stop.atoc] | capitalise }} 📍 {{ tiploc[service.tiploc] | capitalise }} platform {{ service.platform }} 🕗 {{ service.pass | friendly_dt }}
 
+👀 Real Time Trains: {{ real_time_trains_url(service) }}
+🗓️ Add to Google Calendar: {{ add_to_google_calendar_url(tiploc, service) }}
 {% endfor -%}

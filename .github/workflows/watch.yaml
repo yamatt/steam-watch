@@ -88,6 +88,15 @@ jobs:
             -H "Authorization: Token ${{ secrets.BUTTONDOWN_API_KEY }}" \
             -H "Content-Type: application/json" \
             --data @email.json
+      - name: Send Matrix Notification
+        if: ${{ steps.corpus.conclusion == 'success' }}
+        run: |
+          uv run python3 -m src.dm_render message.md > dm.json
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            --data @dm.json \
+            "https://${{ secrets.MATRIX_SERVER }}/_matrix/client/r0/rooms/${{ secrets.MATRIX_ROOM_ID }}/send/m.room.message?access_token=${{ secrets.MATRIX_ACCESS_TOKEN }}"
+      
   workflow-keepalive:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-latest

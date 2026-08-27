@@ -4,8 +4,8 @@ import click
 
 @click.command()
 @click.argument("message_file_path", required=True)
-def argument_handler(message_file_path):
-    output = render(message_file_path)
+def argument_handler(tiploc, message_file_path):
+    output = render(tiploc, message_file_path)
     print(output)
 
 if __name__ == "__main__":
