@@ -27,7 +27,7 @@ jobs:
           curl -L --fail -u '${{ secrets.OPEN_RAIL_DATA_USER_PASS }}' 'https://publicdatafeeds.networkrail.co.uk/ntrod/CifFileAuthenticate?type=CIF_${{ matrix.toc }}_TOC_FULL_DAILY&day=toc-full' -o full.jsonl.gz
       - name: Install uv
         if : steps.download.outcome != 'failure'
-        uses: astral-sh/setup-uv@v10.0.1
+        uses: astral-sh/setup-uv@v10.1.0
       - name: Set up Python
         if: steps.download.outcome != 'failure'
         uses: actions/setup-python@v7
