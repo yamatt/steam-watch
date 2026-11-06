@@ -20,11 +20,13 @@ jobs:
     name: Lint Code
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@v7.0.1'
+      - name: Install Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: ".python-version"
       - name: Install uv
         uses: astral-sh/setup-uv@v10.3.3
-      - name: Set up Python
-        run: uv python install
       - name: Run linters
         run: |
           uv run black --check --diff steam_watch tests
@@ -34,10 +36,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
+      - name: Install Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: ".python-version"
       - name: Install uv
         uses: astral-sh/setup-uv@v10.3.3
-      - name: Set up Python
-        run: uv python install
       - name: Run unit tests
         run: |
           uv run pytest tests
@@ -48,10 +52,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
+      - name: Install Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: ".python-version"
       - name: Install uv
         uses: astral-sh/setup-uv@v10.3.3
-      - name: Set up Python
-        run: uv python install
       - name: Run Bandit
         run: |
           uv run bandit -r src/schedule_parser/ steam_watch/
@@ -60,10 +66,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
+      - name: Install Python
+        uses: actions/setup-python@v7
+        with:
+          python-version-file: ".python-version"
       - name: Install uv
         uses: astral-sh/setup-uv@v10.3.3
-      - name: Set up Python
-        run: uv python install
       - name: Run Scrapy spider
         run: |
           uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json
