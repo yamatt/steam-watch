@@ -29,8 +29,7 @@ jobs:
         uses: astral-sh/setup-uv@v10.3.3
       - name: Run linters
         run: |
-          uv run black --check --diff steam_watch tests
-          uv run isort --check-only steam_watch tests
+          uv run ruff check steam_watch tests
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest

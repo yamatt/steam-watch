@@ -1,5 +1,6 @@
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
+from typing import ClassVar
 
 import scrapy
 
@@ -9,7 +10,7 @@ KNOWN_TOCS = {"WR", "LS", "TY"}
 
 class SteamTrainsSpider(scrapy.Spider):
     name = "steam_trains"
-    allowed_domains = ["realtimetrains.co.uk"]
+    allowed_domains: ClassVar[list[str]] = ["realtimetrains.co.uk"]
 
     days_ahead = 7
 
@@ -18,11 +19,11 @@ class SteamTrainsSpider(scrapy.Spider):
         self.station_code = station_code.upper()
 
     def start_requests(self):
-        today = datetime.today()
+        today = datetime.now(tz=UTC).astimezone()
         for i in range(self.days_ahead):
             check_date = today + timedelta(days=i)
             date_str = check_date.strftime("%Y-%m-%d")
-            url = f"https://www.realtimetrains.co.uk/search/detailed/gb-nr:{self.station_code}/{check_date.strftime('%Y-%m-%d')}/0000-2359?stp=S&show=all"
+            url = f"https://www.realtimetrains.co.uk/search/detailed/gb-nr:{self.station_code}/{date_str}/0000-2359?stp=S&show=all"
             yield scrapy.Request(
                 url=url, callback=self.parse, meta={"date": check_date}
             )
@@ -39,7 +40,7 @@ class SteamTrainsSpider(scrapy.Spider):
                     # Parse date and time into datetime object in UTC
                     service_time = datetime.strptime(time_str, "%H%M").time()
                     dt_utc = datetime.combine(response.meta["date"], service_time)
-                except ValueError as e:
+                except ValueError:
                     dt_utc = None  # Fallback in case parsing fails
 
                 yield {
