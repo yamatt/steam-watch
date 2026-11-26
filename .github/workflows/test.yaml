@@ -26,7 +26,7 @@ jobs:
         with:
           python-version-file: ".python-version"
       - name: Install uv
-        uses: astral-sh/setup-uv@v10.3.3
+        uses: astral-sh/setup-uv@v10.4.0
       - name: Run linters
         run: |
           uv run ruff check steam_watch tests
@@ -40,7 +40,7 @@ jobs:
         with:
           python-version-file: ".python-version"
       - name: Install uv
-        uses: astral-sh/setup-uv@v10.3.3
+        uses: astral-sh/setup-uv@v10.4.0
       - name: Run unit tests
         run: |
           uv run pytest tests
@@ -56,7 +56,7 @@ jobs:
         with:
           python-version-file: ".python-version"
       - name: Install uv
-        uses: astral-sh/setup-uv@v10.3.3
+        uses: astral-sh/setup-uv@v10.4.0
       - name: Run Bandit
         run: |
           uv run bandit -r src/schedule_parser/ steam_watch/
@@ -70,7 +70,7 @@ jobs:
         with:
           python-version-file: ".python-version"
       - name: Install uv
-        uses: astral-sh/setup-uv@v10.3.3
+        uses: astral-sh/setup-uv@v10.4.0
       - name: Run Scrapy spider
         run: |
           uv run scrapy crawl steam_trains -a station_code=${{ secrets.STATION_CODE }} -o steam_trains.json
